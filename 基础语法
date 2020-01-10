@@ -1,0 +1,235 @@
+1. 插值操作
+	1.1 mustuche语法
+		1.1.1 基本语法
+			又叫双大括号语法，其数据是响应式的
+			例子：
+			<div>{{message}}</div>
+		1.1.2 mustuche语法可以写简单的表达式
+			例子：
+			<div>
+				{{message1 + ‘ ’ + message2}} // 实现了两个字符串的拼接，并在中间加入空格
+			</div>
+	1.2 v-once
+		该指令表示元素和组件只渲染一次，不会随着数据的改变而改变
+		例子：
+		<div v-once>{{message}}</div>
+	1.3 v-cloak
+		能够解决插值表达式闪烁的问题
+		例子：
+	    <style>
+		  [v-cloak] {
+		    /* display: none; */
+		  }
+	    </style>
+		<p v-cloak></p>
+	1.4 v-text
+		默认 v-text 是没有闪烁问题的
+		例子：
+		 <h4 v-text="data中的属性"></h4>
+		v-text会覆盖元素中原本的内容，但是 插值表达式  只会替换自己的这个占位符，不会把 整个元素的内容清空
+		例子：
+		<div v-text="msg2"></div>
+	1.5 v-html
+		尝试将data传递过来的内容解析为html
+		例子：
+		<div v-html="msg2">1212112</div>
+
+2. 绑定属性
+	v-bind实现动态绑定，如a元素的href属性、img元素的src属性等
+	2.1 基本语法
+		例子：
+		<a v-bind:href="连接属性"></a>
+	2.2 语法糖
+		v-bind可以省略，只保留冒号
+		<a :href="连接属性"></a>
+	2.3 v-bind动态绑定class属性
+		例子：
+		<a :class="对象语法或数组语法"></a>
+		2.3.1 对象语法的用法（常用）
+			用法一： 直接通过{}绑定一个类
+				<a :class="{'active':isActive}"></a>
+			用法二： 通过判断传入多个值
+				<a :class="{'active':isActive，'line':isLine}"></a>
+			用法三： 可以和普通类共存
+				<a class="tittle" :class="{'active':isActive}"></a>
+			用法四：如果过于复杂，可以放在一个methods或computed中
+				<a :class="classes"></a> // classes是一个自定义的methods
+		2.3.2 数组语法的用法（用得较少）
+			用法一：直接通过[]绑定一个类
+				<a :class="['active']"></a>
+			用法二：传入多个值
+				<a :class="['active', 'line']"></a>
+			用法三：可以和普通类共存
+				<a class="tittle" :class="['active']"></a>
+			用法四：如果过于复杂，可以放在一个methods或computed中
+				<a :class="classes"></a> // classes是一个自定义的methods
+	2.4 v-bind动态绑定style
+		绑定方式一：对象语法（常用）
+		例子：
+		<a :style="color: data中的属性"></a>
+		绑定方式二：数组语法
+		例子：
+		<a :style="[baseStyles, overridingStyles]"> // 多个值以逗号分隔即可
+
+3. 计算属性
+	在某些情况下，我们可能需要对数据进行一些转换或将多个数据结合起来以后再显示，这时候就需要用到计算属性
+	计算属性就是vue实例的computed选项，其中可以自定义一些方法用以处理数据
+	3.1 计算属性的setter和getter
+		每个计算属性都默认包含一个get和一个set方法，但是set方法基本不用，因此一般情况计算属性的方法都省略set而以简写形式出现
+	3.2 计算属性的缓存
+		methods和computed中的方法都可以实现相同的功能，但computed会进行缓存
+		computed依赖于data中的数据，只有在它的相关依赖数据发生改变时才会重新求值
+		即如果computed方法的中的依赖于data的参数未改变，则该方法只会调用一次方法
+		而methods无论依赖参数是否改变，均会多次调用
+
+4. 事件监听
+	使用v-on指令监听用户发生的事件，比如点击、拖拽、键盘事件等等
+	4.1 基本语法
+		例子：
+		<button v-on:click="increment()">+</button>
+	4.2 语法糖
+		v-on:可以写成"@"
+	4.3 v-on参数
+		1.如果该方法不需要额外参数，小括号可以省略
+		例如：
+		<button @click="btn1Click">按钮1</button>
+		2.写方法时省略了小括号, 但是方法本身是需要一个参数的, 这个时候, Vue会默认将浏览器生产的event事件对象作为参数传入到方法
+		3. 如果需要同时传入某个参数，同时需要event时，则要使用：$event
+		例如：
+		<button @click="btn3Click(abc, $event)">按钮3</button>
+	4.4 v-on修饰符
+		4.4.1 .stop调用 event.stopPropagation()，阻止冒泡
+		例如：
+		<button @click.stop="btnClick">按钮</button>
+		4.4.2 .prevent调用 event.preventDefault()，阻止默认行为
+		例如：
+		<input type="submit" value="提交" @click.prevent="submitClick">
+		4.4.3 .once - 只触发一次回调。
+
+5. 条件判断
+	5.1 v-if、v-else-if、v-else
+		和原生的逻辑判断一样
+		例子：
+		<h2 v-if="score>=90">优秀</h2>
+	5.2 v-show
+		用于决定一个元素是否要显示
+		5.2.1 v-if和v-show对比
+			v-if当条件为false时，压根不会有对应的元素在DOM中
+			v-show当条件为false时，仅仅是将元素的display属性设置为none而已
+		5.2.2 开发中如何选择
+			当需要在显示与隐藏之间切片很频繁时，使用v-show
+			当只有一次切换时，通过使用v-if
+		
+6. 循环遍历
+	6.1 v-for遍历数组
+		1.在遍历的过程中,没有使用索引值(下标值)
+		例子：
+		<li v-for="item in names">{{item}}</li>
+		2.在遍历的过程中, 获取索引值
+		例子：
+		<li v-for="(item, index) in names">
+		  {{index+1}}.{{item}}
+		</li>
+	6.2 v-for遍历对象
+		1.在遍历对象的过程中, 如果只是获取一个值, 那么获取到的是value
+		例子：
+		<li v-for="item in info">{{item}}</li>
+		2.获取key和value 格式: (value, key)
+		例子：
+		<li v-for="(value, key) in info">{{value}}-{{key}}</li>
+		3.获取key和value和index 格式: (value, key, index)
+		<li v-for="(value, key, index) in info">{{value}}-{{key}}-{{index}}</li>
+	6.3 组件的key属性
+		官方推荐我们在使用v-for时，给对应的元素或组件添加上一个:key属性，key的作用主要是为了复用数据更新后无变化的部分，从而更高效地更新虚拟DOM
+	6.4 具有响应式特性的数组方法
+		1. push()
+		在数组末尾插入一个或几个元素
+		2. pop()
+		在数组末尾删除一个或几个元素
+		3. shift()
+		在数组开头删除一个或几个元素
+		4. unshift()
+		在数组开头插入一个或几个元素
+		5.sort()
+		数组排序
+		6. reverse()
+		数组反转
+		7.splice(参数1, 参数2, 参数3)
+		splice作用: 删除元素/插入元素/替换元素
+		参数1：对于三种情况来说都是开始位置
+		删除元素: 只写参数1、参数2或只写参数1，第二个参数表示你要删除几个元素(如果没有第二个参数,就删除后面所有的元素)
+		替换元素: 写全三个参数，第二个参数表示我们要替换几个元素, 后面是用于替换前面的元素
+		插入元素: 写全三个参数，第二个参数传入0, 并且后面跟上要插入的元素
+	6.5 通过索引值替换数组中的元素不具有响应式特性
+		若要响应式效果，可用以下两种方法：
+		1. splice方法
+			this.letters.splice(0, 1, 'bbbbbb')
+		2. set方法（vue内置）
+			set(要修改的对象, 索引值, 修改后的值)
+			Vue.set(this.letters, 0, 'bbbbbb')
+7. 补充内容：三个高阶函数
+	7.1 filter函数
+		let newNums = nums.filter(function (n) { // n是每一个元素
+		  return n < 100 // 返回所有小于100的元素
+		})
+	7.2 map函数
+		let new2Nums = newNums.map(function (n) { // n是每一个元素
+		  return n * 2 // 每个元素乘以2后返回
+		})
+	7.3 reduce函数
+		reduce作用对数组中所有的内容进行汇总
+		let total = new2Nums.reduce(function (preValue, n) { // function有两个参数，preValue是前n-1个元素的累加和，n是第n个元素
+		  return preValue + n // 返回n个元素的和
+		}, 0)
+	7.4 链式编程
+		需求：取出所有小于100的数字，将取出的数字乘以2，将所有转换后的数字相加
+		let total = nums.filter(function (n) {
+		  return n < 100
+		}).map(function (n) {
+		  return n * 2
+		}).reduce(function (prevValue, n) {
+		  return prevValue + n
+		}, 0)
+		利用箭头函数，可进一步简化为：
+		let total = nums.filter(n => n < 100).map(n => n * 2).reduce((pre, n) => pre + n);
+
+8. v-model
+	Vue中使用v-model指令来实现表单元素和数据的双向绑定
+	双向绑定的是表单元素的value和vue实例data中对应的数据，绑定后改变两者其中一个的数据，另一个也会变成同样的值
+	8.1 语法
+		例子：
+		<input type="text" v-model="data中的属性">
+		v-model其实是一个语法糖，它的背后本质上是包含两个操作：
+		1.v-bind绑定一个value属性
+		2.v-on指令给当前元素绑定input事件
+		也就是说：
+		<input type="text" v-model="message">
+		等同于
+		<input type="text" v-bind:value="message" v-on:input="message = $event.target.value">
+	8.2 v-model：radio
+		例子：
+		添加v-model="sex"后，两个单选按钮实现互斥；且与data中的sex双向响应
+	8.3 v-model：checkbox
+		应用场景：
+		单个勾选框，用户同意协议后才能点击下一步
+		多个复选框，记录用户选择的选项，当选中某一个时，就会将input的value添加到data的数组中
+	8.4 v-model：select
+		
+9. 修饰符
+	9.1 lazy修饰符
+		默认情况下，v-model默认是在input事件中同步输入框的数据的
+		也就是说，一旦有数据发生改变对应的data中的数据就会自动发生改变，这样更新频率过高且没必要
+		lazy修饰符可以让数据在失去焦点或者回车时才会更新
+		例子：
+		<input type="text" v-model.lazy="message">
+	9.2 number修饰符
+		默认情况下，在输入框中无论我们输入的是字母还是数字，都会被当做字符串类型进行处理
+		但是如果我们希望处理的是数字类型，那么最好直接将内容当做数字处理
+		number修饰符可以让在输入框中输入的内容自动转成数字类型
+		例子：
+		<input type="number" v-model.number="age">
+	9.3 trim修饰符
+		如果输入的内容首尾有很多空格，通常我们希望将其去除
+		trim修饰符可以过滤内容左右两边的空格
+		例子：
+		<input type="text" v-model.trim="name">
