@@ -1,0 +1,30 @@
+1. ES中模块的导入和导出
+	1.1 export指令用于导出变量
+		1. 定义后导出：
+		export {
+		  flag, sum
+		}
+		2. 定义时导出:
+		export var num1 = 1000;
+		export var height = 1.88
+	1.2 export指令用于导出函数或类
+		导出方式和导出变量一致
+	1.3 export default
+		某些情况下，一个模块中包含某个的功能，我们并不希望给这个功能命名，而且让导入者可以自己来命名
+		1.3.1 export default导出已定义变量
+			const address = '北京市'
+			export {
+			  address
+			}
+		1.3.2 在定义函数时，同时使用export default导出该函数
+		export default function (argument) {
+		  console.log(argument);
+		}
+		1.3.3 export default在同一个模块中，不允许同时存在多个
+	1.4 import
+		1.4.1 基本语法
+			import {变量1, 变量2, ……} from "导出文件名.js";
+		1.4.2 导入 export default中的内容
+			import 想要改成的变量名 from "导出文件名.js";
+		1.4.3 将导出的内容全部导入
+			import * as 自定义名 from "导出文件名.js"; // *是通配符表示全选
