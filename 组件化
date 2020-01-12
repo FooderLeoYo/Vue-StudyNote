@@ -253,7 +253,7 @@
 	6.2 子组件访问父组件：$parent（用得更少）
 		
 
-7. 插槽slot
+7. 插槽slot（vue3.x版本以上已弃用，改为v-slot）
 	7.1 为什么需要插槽
 		在生活中很多地方都有插槽，电脑的USB插槽，插板当中的电源插槽
 		组件的插槽也是为了让我们封装的组件更加具有扩展性
@@ -276,3 +276,31 @@
 			  <slot><button>按钮</button></slot> 
 			</div>
 		  </template>
+	7.3 具名插槽
+		作用：用于指定插入的是哪一个插槽
+		语法：给插槽添加name属性
+		例子：
+		<div id="app">
+		  <cpn><span slot="center">标题</span></cpn>
+		  <cpn><button slot="left">返回</button></cpn>
+		</div>
+		<template id="cpn">
+		  <div>
+			<slot name="left"><span>左边</span></slot>
+			<slot name="center"><span>中间</span></slot>
+			<slot name="right"><span>右边</span></slot>
+		  </div>
+		</template>
+	7.4 作用域插槽
+		父组件替换插槽的标签，但是内容由子组件来提供
+		7.4.1 编译作用域
+			在父组件模板中的语句只能拿到父组件data中的数据，子组件同理
+		7.4.2 作用域插槽的语法
+			1. 子组件模板中的插槽标签中，添加：自定义名="子组件实例data中的目标数据属性名"
+			<slot :自定义名="子组件data属性名">
+			2. vue模板使用子组件时，添加一个template标签并添加属性：slot-scope="自定义名"，就可以使用子组件中的数据了
+			<cpn>
+				<template slot-scope="自定义名">
+					<span>{{自定义名.子组件data属性名}}</span>
+				</template>
+			</cpn>
