@@ -1,0 +1,35 @@
+1. 什么是webpack
+	是一种前端模块化打包工具，使用它可以将多个js文件打包成一个bundle.js文件
+	在html文件中只需要导入这一个文件即可使用所有其他打包前的js文件的功能
+
+2. 导出并使用bundle.js文件
+	共分四个步骤：
+	1. 打开terminal
+	2. 使用“cd+文件夹名”进入到目标文件夹（index.html、src和dist三者共同所在的文件夹）目录中
+	3. 输入打包指令：webpack ./src/入口js文件名.js ./dist/bundle.js // src和dist是自定义文件夹名
+	4. 在html文件中利用script标签导入bundle.js
+
+3. 生成package.json文件
+	package.json文件生成后才能正常使用node，共分三个步骤：
+	1.terminal输入：npm init
+	2. package name: 自定义一个名字
+	3. 其余的直接回车
+
+4. 直接输入npm run build即生成ndle.js文件
+	这个方法除了简化需要输入的命令，同时还使得打包的时候优先用本地webpack而不是全局webpack
+	共分三个步骤：
+	1. 添加一个webpack.config.js文件，文件内容如下
+	const path = require('path') /* 从node包里导出 */
+
+	module.exports = {
+	  entry: './src/main.js',
+	  output: {
+		path: path.resolve(__dirname, 'dist'),
+		filename: 'bundle.js'
+	  },
+	}
+	2. 在package.json文件中的"scripts": {}中，"test": "echo \"Error: no test specified\" && exit 1"后加逗号
+	3. 另起下一行，添加："build": "webpack"
+
+5. 本地安装webpack
+	npm install webpack@3.6.0 --save-dev
