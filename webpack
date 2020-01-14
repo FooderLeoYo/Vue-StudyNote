@@ -33,3 +33,67 @@
 
 5. 本地安装webpack
 	npm install webpack@3.6.0 --save-dev
+
+6. loader
+	作用：除了打包js文件，还可以一并打包css、less等其他类型的文件
+	6.1 安装css-loader
+		1. 安装：npm install --save-dev css-loader
+		2. 配置webpack.config.json，在module.exports的大括号内输入以下内容：
+		  module: {
+			rules: [
+			  {
+				test: /\.css$/,
+				use: [ 'style-loader', 'css-loader' ]
+			  }
+			]
+		  }
+	6.2 安装style-loader
+		1. 安装：npm install style-loader --save-dev
+		2. 6.1中已在use:中添加了style-loader，因此配置webpack.config.json这一步已提前完成
+
+	6.3 安装less-loader
+		1. 安装：npm install --save-dev less-loader less
+		2. 配置webpack.config.json：在之前的rules里面的{}后加逗号，然后添加：
+		{
+            test: /\.less$/,
+            use: [{
+                loader: "style-loader" // creates style nodes from JS strings
+            }, {
+                loader: "css-loader" // translates CSS into CommonJS
+            }, {
+                loader: "less-loader" // compiles Less to CSS
+            }]
+        }
+		
+	6.4 收尾
+		1. main.js中添加css、less文件依赖
+		添加css依赖：require('./css/normal.css')
+		less文件同理
+		2. terminal中运行：npm run build
+	6.5. 图片文件的处理
+		安装过程与其他loader大同小异
+		1. 安装url-loader和file-loader
+		前者负责图片大小小于limit的情况，后者负责大于的情况
+		2. 配置webpack.config.json时，只加入url-loader的配置语句，若两个loader的配置同时加入则无法显示
+		3. 在module.exports的output大括号内添加：publicPath: 'dist/'，以确保能正确找到图片
+		4. 在url-loader的配置语句的use下的option大括号里，添加：name: 'img/[name].[hash:8].[ext]'
+		使得新生成的图片名字按照：原文件名+截取的前8位hashcode+原图片扩展名
+	6.6. 将ES6语法转成ES5语法后再打包
+		转换的目的是为了照顾浏览器兼容性
+		1. 安装bable-loader
+		2. 配置webpack.config.json
+
+7. webpack使用vue的配置过程
+	7.1 安装
+		npm install vue --save
+	7.2 配置main.js
+		输入：import Vue from 'vue'
+		再创建vue实例
+	7.3 配置webpack.config.json
+		作用：指定所使用的vue类别为runtime-complier而不是runtime-only
+		在module.exports下与module同级，添加：
+		resolve: {
+			alias: {
+			  'vue$': 'vue/dist/vue.esm.js'
+			}
+		}
