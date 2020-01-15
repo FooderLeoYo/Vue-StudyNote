@@ -15,7 +15,7 @@
 	2. package name: 自定义一个名字
 	3. 其余的直接回车
 
-4. 直接输入npm run build即生成ndle.js文件
+4. 直接输入npm run build即生成bundle.js文件
 	这个方法除了简化需要输入的命令，同时还使得打包的时候优先用本地webpack而不是全局webpack
 	共分三个步骤：
 	1. 添加一个webpack.config.js文件，文件内容如下
@@ -29,7 +29,9 @@
 	  },
 	}
 	2. 在package.json文件中的"scripts": {}中，"test": "echo \"Error: no test specified\" && exit 1"后加逗号
-	3. 另起下一行，添加："build": "webpack"
+	3. 另起下一行，添加：
+		"build": "webpack",
+		注意：1. 不要加注释；2. 如果报错，删掉逗号运行成功后再加逗号
 
 5. 本地安装webpack
 	npm install webpack@3.6.0 --save-dev
@@ -65,35 +67,116 @@
             }]
         }
 		
-	6.4 收尾
+	6.4 添加依赖和打包
 		1. main.js中添加css、less文件依赖
 		添加css依赖：require('./css/normal.css')
 		less文件同理
 		2. terminal中运行：npm run build
+		注意：打包前一定要先保存！！！
 	6.5. 图片文件的处理
 		安装过程与其他loader大同小异
 		1. 安装url-loader和file-loader
 		前者负责图片大小小于limit的情况，后者负责大于的情况
 		2. 配置webpack.config.json时，只加入url-loader的配置语句，若两个loader的配置同时加入则无法显示
-		3. 在module.exports的output大括号内添加：publicPath: 'dist/'，以确保能正确找到图片
-		4. 在url-loader的配置语句的use下的option大括号里，添加：name: 'img/[name].[hash:8].[ext]'
+		3. 在url-loader的配置语句的use下的option大括号里，添加：name: 'img/[name].[hash:8].[ext]'
 		使得新生成的图片名字按照：原文件名+截取的前8位hashcode+原图片扩展名
 	6.6. 将ES6语法转成ES5语法后再打包
 		转换的目的是为了照顾浏览器兼容性
 		1. 安装bable-loader
 		2. 配置webpack.config.json
 
-7. webpack使用vue的配置过程
-	7.1 安装
-		npm install vue --save
-	7.2 配置main.js
-		输入：import Vue from 'vue'
-		再创建vue实例
-	7.3 配置webpack.config.json
-		作用：指定所使用的vue类别为runtime-complier而不是runtime-only
-		在module.exports下与module同级，添加：
-		resolve: {
-			alias: {
-			  'vue$': 'vue/dist/vue.esm.js'
-			}
-		}
+	6.7 webpack使用vue的配置过程
+		6.7.1 安装vue及vueloader
+			npm install vue --save
+			npm install vue-loader vue-template-compiler --save-dev
+		6.7.2 配置main.js
+			输入：import Vue from 'vue'
+			再创建vue实例
+		6.7.3 配置webpack.config.json
+			1. 在module.exports下与module同级，添加：
+				resolve: {
+					alias: {
+					  'vue$': 'vue/dist/vue.esm.js'
+					}
+				}
+				作用：指定所使用的vue类别为runtime-complier而不是runtime-only
+			2. 与resolve同级，添加plugins实例：
+			  plugins: [
+				new VueLoaderPlugin()
+			  ],
+			3. 与module.exports同级，添加plugins依赖：
+				const { VueLoaderPlugin } = require('vue-loader');
+		6.7.4 使用组件
+			main.js中导入组件并添加vue实例
+				import App from './vue/App.vue'
+
+				new Vue({
+				  el: '#app',
+				  template: '<App/>',
+				  components: {
+					App
+				  }
+				})
+
+7. Plugin
+	7.1 添加版权插件
+		此插件webpack已默认安装，只需配置webpack.config.json
+		1. 与module.exports同级，添加webpack依赖：const webpack = require('webpack')
+		2. 在plugins中添加：new webpack.BannerPlugin('想输入的内容')
+	7.2 自动生成html文件到dist文件夹插件
+		发布的内容都是放在dist文件夹里的，因此需要实现自动生成一个index.html文件到dist文件夹里
+		1. 安装：npm install html-webpack-plugin --save-dev
+		2. webpack.config.json中添加依赖：const HtmlWebpackPlugin = require('html-webpack-plugin')
+		3. 在plugins中添加：
+			new HtmlWebpackPlugin ({
+			  template: 'index.html'
+			}),
+	7.3 压缩js文件插件
+		1. 安装：npm install uglifyjs-webpack-plugin@1.1.1 --save--dev
+		2. 添加依赖：npm install uglifyjs-webpack-plugin@1.1.1 --save--dev
+		3. 在plugins中添加：new UglifyjsWebpackPlugin,
+
+8. 搭建本地服务器
+	webpack提供了一个可选的本地开发服务器，这个本地服务器基于node.js搭建，内部使用express框架，
+	可以实现让浏览器自动刷新显示我们修改后的内容，而不再需要频繁运行npm run build
+	修改内容后，会实时生成到内存中而不是硬盘里
+	1. 安装：npm install --save-dev webpack-dev-server@2.9.1
+	2. 配置webpack.config.json
+		与plugins同级，添加：
+		devServer: {
+			contentBase: './dist',
+			inline: true
+		},
+	3. 配置package.json
+		作用：实现运行npm run dev时，优先从本地找，并且自动打开浏览器
+		scripts大括号内，添加："dev": "webpack-dev-server --open",
+	4. 修改后需要看效果时，先保存，然后运行：npm run dev
+	5. 终止本地服务器：ctrl+c
+
+9. 配置文件的抽离
+	在webpack.config.json中，有些代码只有在开发时有用，而有些则只有在发布时才有用，因此可以进一步细分抽离
+	9.1 安装：npm install --save-dev webpack-merge 
+	9.2 将webpack.config.json的内容复制到build文件夹下一个新建的文件base.config，并修改output下的path为：path.resolve(__dirname, '../dist'),
+	9.3 配置prod.config：
+		1. 将const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')剪切到此文件
+		2. 添加：const webpackMerge = require('webpack-merge')
+		3. 添加：const baseConfig = require('./base.config')
+		4. 添加并删除base中的相关内容：
+			module.exports = webpackMerge(baseConfig, {
+			  plugins: [
+				new UglifyjsWebpackPlugin,
+			  ],
+			})
+	9.4 配置dev.config
+		1. 添加：const webpackMerge = require('webpack-merge')
+		2. 添加：const baseConfig = require('./base.config')
+		3. 添加并删除base中的相关内容：
+			module.exports = webpackMerge(baseConfig, {
+			  devServer: {
+				contentBase: './dist',
+				inline: true // 是否需要实时监听
+			  }
+			})
+	9.5 配置package.json
+		1. 将scripts中的build改为："webpack --config ./build/prod.config.js",
+		2. 将scripts中的dev改为："webpack-dev-server --open --config ./build/dev.config.js"
