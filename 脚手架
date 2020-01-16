@@ -1,0 +1,27 @@
+1. 什么是脚手架
+	CLI是Command-Line Interface, 翻译为命令行界面, 但是俗称脚手架
+	使用 vue-cli 可以快速搭建Vue开发环境以及对应的webpack配置
+
+2. 相关安装
+	2.1 安装脚手架
+		npm install -g @vue/cli @vue/cli-service-global
+	2.2 拉取2.x脚手架模板
+		npm install -g @vue/cli-init -g
+
+3. 项目初始化
+	3.1 Vue CLI2初始化项目：vue init webpack 项目名称
+	3.2 Vue CLI3初始化项目：vue create 项目名称
+
+4. Runtime-Compiler和Runtime-only的区别
+	4.1 使用App过程的区别
+		通过比较两者main.js文件可知：
+		4.1.1 runtime-compiler
+			过程：在components中注册组件App -> template中使用注册的App -> ast -> render -> vdom -> UI
+		4.1.2 runtime-only
+			过程：render -> vdom -> UI
+			注意，而这一模式下，.vue文件中的template是被vue-template-compiler转换成了render函数
+	4.2 runtime-only比runtime-compiler：1.性能更高 2.代码量更少
+	
+5. CLI3
+	5.1 可视化配置
+		控制台输入：vue ui
