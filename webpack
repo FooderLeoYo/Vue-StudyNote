@@ -34,6 +34,7 @@
 		注意：1. 不要加注释；2. 如果报错，删掉逗号运行成功后再加逗号
 
 5. 本地安装webpack
+	首先安装nodejs
 	npm install webpack@3.6.0 --save-dev
 
 6. loader
