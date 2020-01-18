@@ -16,6 +16,96 @@
 		渲染过程：用户在浏览器中输入一个url —> 浏览器到静态服务器中拿到唯一的一整套html+css+js代码 -> 用户再点击该页面中某个按钮生成了另一个url 
 		-> 前端路由根据映射关系从之前获取的一整套代码中抽取对应的资源（组件）进行渲染而不是重新向静态服务器申请新的资源
 
-2. vue-router
+2. vue-router的安装和初步配置
 	2.1 步骤一: 安装vue-router
 		npm install vue-router --save
+	2.2 步骤二：在模块化工程中使用它
+		在router文件夹下会自动生成一个新文件index.js：
+		// 1. 导入路由对象
+		import VueRouter from 'vue-router'
+		import Vue from 'vue'
+		// 2.通过Vue.use(插件), 安装插件
+		Vue.use(VueRouter)
+		// 3. 创建路由实例，并且传入路由映射配置
+		const routes = [ // routes负责的就是路由和组件之间的应用关系
+		]
+		const router = new VueRouter({
+		  routes // 这里是为了结构清晰，因此把routes抽出来放到上面写
+		})
+		// 4.将router对象传入到Vue实例
+		export default router
+	2.3 步骤三：使用vue-router的步骤
+		第一步: 创建路由组件
+			在components文件夹下创建新的.vue文件
+		第二步: 配置路由映射: 组件和路径映射关系
+			在index.js中导入.vue文件：import 文件名 from '../components/文件名'
+			在index.js中的routes中配置path和component：
+			path: '/文件名'
+			component: 文件名
+		第三步: 使用路由: 通过<router-link>和<router-view>
+			在App.vue中的template的<div id="app">内添加：<router-link to="/文件名">标签名</router-link>
+			另起一行添加（位置可变，页面渲染时的位置也会相应改变）：<router-view></router-view>
+	
+3. vue-router的使用	
+	3.1 设置默认打开就是首页
+		更改index.js中Router实例中的routes下对应的大括号内的内容
+			{
+			  path: '',
+			  component: Home
+			}
+			或者（推荐）：
+			{
+			  path: '',
+			  redirect: '/Home'
+			}
+	3.2 将默认的hash模式改为History模式
+		在index.js的Router实例中与routes平级添加属性：mode: 'history'
+	3.3 router-link补充
+		<router-link>除了属性: to, 还有一些其他属性:
+		3.3.1 tag:
+			tag可以指定<router-link>之后渲染成什么组件, 而不仅是默认的<a>
+		3.3.2 replace 
+			replace不会留下history记录, 所以指定replace的情况下, 后退键返回不能返回到上一个页面中
+		3.3.3 active-class
+			当<router-link>对应的路由匹配成功时, 会自动给当前元素设置一个router-link-active的class
+			作用：在Vue.js中给这个类名添加CSS样式，即可实现点击后改变成该样式
+			修改active-class的默认名称：
+			1. 通过replace改
+			<router-link to="/home" tag="button" replace active-class="要改成的名字">元素名</router-link>
+			2.  通过linkActiveClass改，且可以实现改所有元素的active-class
+			给index.js的Router实例添加linkActiveClass: '要改成的名字'
+	3.4 路由代码跳转
+		有时候, 页面的跳转可能需要执行对应的JavaScript代码, 这个时候, 就可以使用第二种跳转方式了
+		在App.vue中：
+		<template>
+		  <div id="app">
+			<button @click="homeClick">首页</button> // 绑定点击事件，实现点击该按钮实现跳转
+			<router-view></router-view>
+		  </div>
+		</template>
+		<script>
+			export default {
+			  name: 'App',
+			  methods: {
+				homeClick() {
+				  // 通过代码的方式修改路由 vue-router
+				  this.$router.push('/home')
+				  this.$router.replace('/home')
+				},
+			  }
+			}
+		</script>
+	3.5 动态路由
+		在某些情况下，一个页面的path路径可能是不确定的
+		比如我们进入用户界面时，希望路径后面还跟上当前用户的ID
+		步骤：
+			1. index.js中，添加一个path: '/自定义名A/自定义名B'，用以配置目标组件
+			2. App.vue中，添加：<router-link :to="'/自定义名A/'+自定义名C">自定义名字</router-link>
+			3，目标组件中的.vue文件中，export default大括号内添加computed属性：
+			    computed: {
+				  自定义名C() {
+					return this.$route.params.自定义名B
+				  }
+				},
+			4. 获取这个添加到路径中的后缀内容并显示到页面中
+				目标组件中的.vue文件的template内添加元素并用mustush语法调用自定义名C
