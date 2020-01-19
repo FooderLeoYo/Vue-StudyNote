@@ -74,38 +74,105 @@
 			<router-link to="/home" tag="button" replace active-class="要改成的名字">元素名</router-link>
 			2.  通过linkActiveClass改，且可以实现改所有元素的active-class
 			给index.js的Router实例添加linkActiveClass: '要改成的名字'
-	3.4 路由代码跳转
-		有时候, 页面的跳转可能需要执行对应的JavaScript代码, 这个时候, 就可以使用第二种跳转方式了
-		在App.vue中：
-		<template>
-		  <div id="app">
-			<button @click="homeClick">首页</button> // 绑定点击事件，实现点击该按钮实现跳转
-			<router-view></router-view>
-		  </div>
-		</template>
-		<script>
-			export default {
-			  name: 'App',
-			  methods: {
-				homeClick() {
-				  // 通过代码的方式修改路由 vue-router
-				  this.$router.push('/home')
-				  this.$router.replace('/home')
-				},
-			  }
-			}
-		</script>
-	3.5 动态路由
+
+3.4 路由代码跳转
+	有时候, 页面的跳转可能需要执行对应的JavaScript代码, 这个时候, 就可以使用第二种跳转方式了
+	在App.vue中：
+	<template>
+	  <div id="app">
+		<button @click="homeClick">首页</button> // 绑定点击事件，实现点击该按钮实现跳转
+		<router-view></router-view>
+	  </div>
+	</template>
+	<script>
+		export default {
+		  name: 'App',
+		  methods: {
+			homeClick() {
+			  // 通过代码的方式修改路由 vue-router
+			  this.$router.push('/home')
+			  this.$router.replace('/home')
+			},
+		  }
+		}
+	</script>
+
+4. 动态路由
+	4.1 什么是动态路由
 		在某些情况下，一个页面的path路径可能是不确定的
 		比如我们进入用户界面时，希望路径后面还跟上当前用户的ID
-		步骤：
-			1. index.js中，添加一个path: '/自定义名A/自定义名B'，用以配置目标组件
-			2. App.vue中，添加：<router-link :to="'/自定义名A/'+自定义名C">自定义名字</router-link>
-			3，目标组件中的.vue文件中，export default大括号内添加computed属性：
-			    computed: {
-				  自定义名C() {
-					return this.$route.params.自定义名B
-				  }
-				},
-			4. 获取这个添加到路径中的后缀内容并显示到页面中
-				目标组件中的.vue文件的template内添加元素并用mustush语法调用自定义名C
+	4.2 配置步骤
+		1. index.js中，添加一个path: '/自定义名A/自定义名B'，用以配置目标组件
+		2. App.vue中，添加：<router-link :to="'/自定义名A/'+自定义名C">自定义名字</router-link>
+		3，目标组件中的.vue文件中，export default大括号内添加computed属性：
+			computed: {
+			  自定义名C() {
+				return this.$route.params.自定义名B
+			  }
+			},
+		4. 获取这个添加到路径中的后缀内容并显示到页面中
+			目标组件中的.vue文件的template内添加元素并用mustush语法调用自定义名C
+
+5. 路由的懒加载
+	5.1 什么是懒加载
+	当打包构建应用时，Javascript 包会变得非常大，影响页面加载
+	如果我们能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了
+	5.2 懒加载的方式
+		在index.js中导入.vue组件时，不用import而使用下面的方式：
+		const Home = () => import('../components/Home.vue')
+
+6. 嵌套路由
+	6.1 什么是嵌套路由
+		某个路径下还分别跟了几个子路径，对应的是几个子组件
+	6.2 配置方法
+		1. 在index.js中routes下的需要加嵌套的那个括号里添加children属性
+		2. children配置path和component属性，注意path不能加/
+		3. 子组件的router-link和router-view不放在App.vue中，而是放在父组件的.vue文件中
+
+7. 传递参数
+	传递参数主要有两种类型: params和query
+	7.1 params的类型
+		配置路由格式: /router/:id
+		传递的方式: 在path后面跟上对应的值
+		传递后形成的路径: /router/123, /router/abc
+	7.2 query的类型
+		7.2.1 基本
+			配置路由格式: /router, 也就是普通配置
+			传递的方式: 对象中使用query的key作为传递方式
+			传递后形成的路径: /router?id=123, /router?id=abc
+		7.2.2 配置
+			配置方式和普通的基本相同，唯一不同的是router-link的to属性要写成对象的形式：
+			<router-link :to="{path: '/profile', query: {name: 'why', age: 18, height: 1.88}}">档案</router-link>
+		7.2.3 取出想要的参数
+			在子组件.vue文件中，利用$route.query.属性名：
+			<h2>{{$route.query.name}}</h2>
+
+8. $route和$router的区别
+	$router为VueRouter实例，想要导航到不同URL，则使用$router.push方法
+	$route为当前router跳转对象，里面可以获取name、path、query、params等 
+
+9. 导航守卫
+	9.1 为什么使用导航守卫
+		在一个SPA应用中, 改变网页的标题
+	9.2 配置
+		1. 在index.js中添加：
+			router.beforeEach((to, from, next) => { // 从from跳转到to
+			  // 因为是单页面，所以页面一直是index，也即document
+			  document.title = to.matched[0].meta.title 
+			  next()
+			})
+		2. 为index.js中每个的routes元素添加：
+			meta: {
+			  title: '自定义名字'
+			}
+
+10. keep-alive
+	可以使被包含的组件保留状态，避免离开时就被销毁以及反复重新创建
+	10.1 实现keep-alive
+		在App.vue中，将<router-view/>包裹在keep-alive标签中，则所有路径匹配到的视图组件都会被缓存
+	10.2 include和exclude属性
+		include="字符串或正则表达" // 只有匹配的组件会被缓存，多个时用逗号分割，不能有空格
+		exclude="字符串或正则表达" // 任何匹配的组件都不会被缓存，多个时用逗号分割，不能有空格
+
+11. TabBar
+	
