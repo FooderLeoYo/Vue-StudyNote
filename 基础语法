@@ -36,16 +36,19 @@
 
 2. 绑定属性
 	v-bind实现动态绑定，如a元素的href属性、img元素的src属性等
-	2.1 基本语法
+	2.1 使用v-bind和未使用时的区别
+		<a :class="classes"></a>是将classes这个变量名赋值给class
+		<a class="classes"></a>是将classes这个字符串赋值给class
+	2.2 基本语法
 		例子：
 		<a v-bind:href="连接属性"></a>
-	2.2 语法糖
+	2.3 语法糖
 		v-bind可以省略，只保留冒号
 		<a :href="连接属性"></a>
-	2.3 v-bind动态绑定class属性
+	2.4 v-bind动态绑定class属性
 		例子：
 		<a :class="对象语法或数组语法"></a>
-		2.3.1 对象语法的用法（常用）
+		2.4.1 对象语法的用法（常用）
 			用法一： 直接通过{}绑定一个类
 				<a :class="{'active':isActive}"></a>
 			用法二： 通过判断传入多个值
@@ -54,7 +57,7 @@
 				<a class="tittle" :class="{'active':isActive}"></a>
 			用法四：如果过于复杂，可以放在一个methods或computed中
 				<a :class="classes"></a> // classes是一个自定义的methods
-		2.3.2 数组语法的用法（用得较少）
+		2.4.2 数组语法的用法（用得较少）
 			用法一：直接通过[]绑定一个类
 				<a :class="['active']"></a>
 			用法二：传入多个值
@@ -63,7 +66,7 @@
 				<a class="tittle" :class="['active']"></a>
 			用法四：如果过于复杂，可以放在一个methods或computed中
 				<a :class="classes"></a> // classes是一个自定义的methods
-	2.4 v-bind动态绑定style
+	2.5 v-bind动态绑定style
 		绑定方式一：对象语法（常用）
 		例子：
 		<a :style="color: data中的属性"></a>
