@@ -32,4 +32,20 @@
 	  })
 
 4. Promise的all方法
+	应用场景：当有两个以上异步请求，且要求这几个请求都完成才执行下一步
+	例子：
+	  Promise.all([ // Promise的all方法
+		new Promise((resolve, reject) => { // 异步请求1
+		  setTimeout(() => {
+			resolve({name: 'why', age: 18})
+		  }, 2000)
+		}),
+		new Promise((resolve, reject) => { // 异步请求2
+		  setTimeout(() => {
+			resolve({name: 'kobe', age: 19})
+		  }, 1000)
+		})
+	  ]).then(results => { // 两个异步请求都完成的话才会执行then
+		console.log(results);
+	  })
 	
