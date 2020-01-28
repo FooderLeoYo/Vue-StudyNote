@@ -1,0 +1,90 @@
+1. 基本概念	
+	1.1 Vuex是做什么的
+		Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式,可以简单的将其看成把需要多个组件共享的变量全部存储在一个对象里面
+		与自己封装一个对象来管理相比，vuex最大的优势是响应式
+	1.2 管理哪些状态
+		比如用户的登录状态、用户名称、头像、地理位置信息，商品的收藏、购物车中的物品等等
+
+2. 使用vuex
+	2.1 安装
+		npm install vuex --save
+	2.2 配置
+		2.2.1 配置main.js
+			1. 添加：import store from './store'
+			2. new Vue大括号内添加：store,
+		2.2.2 src文件夹下新建一个store文件夹
+		2.2.3 store文件夹下新建一个index.js文件
+	2.3 对state进行操作
+		通过：this.$store.state.属性名，来访问状态
+		通过：this.$store.commit('mutation中方法')，来修改状态
+		注意事项：
+			我们通过提交mutation的方式修改state，而非直接给store.state.属性名赋新值
+			这是因为如果跳过mutation直接更改state，Vuex将无法通过devtools监控更改历史（过程见ppt第7页图）
+	2.3 安装vue devtools浏览器插件
+		该插件可以记录每次更改state时的数据
+
+3. Vuex的几个核心概念
+	3.1 State单一状态树
+		如果你的状态信息是保存到多个Store对象中的，那么之后的管理和维护等等都会变得特别困难。
+		所以Vuex也使用了单一状态树来管理应用层级的全部状态
+	3.2 Getters基本使用
+		有时候，我们需要从store中获取一些state变异后的状态，这是我们可以在Store中定义getters
+		例如：
+			getters: {
+				more20stu(state) {
+					return state.students.filter(s => s.age > 20)
+				  }
+			}
+		getters默认是不能传递参数的, 如果希望传递参数, 那么只能让getters本身返回另一个函数
+		例如：
+			  moreAgeStu(state) {
+				return age => {
+				  return state.students.filter(s => s.age > age)
+				}
+			  }
+	3.3 mutations
+		3.3.1 mutations传递参数
+			在通过mutations更新数据的时候, 可以携带一些额外的参数，参数被称为是mutations的载荷(Payload)
+			例如：
+				  incrementCount(state, payload) {
+					state.counter += payload.count
+				  }
+			如果参数不是一个，payload则会以对象的形式传递
+		3.3.2 mutations提交风格
+			Vue还提供了另外一种风格, 它是一个包含type属性的对象
+			  addCount(count) {
+				// 1.普通的提交
+				// this.$store.commit('incrementCount', count)
+				// 2.特殊的提交
+				this.$store.commit({
+				  type: 'incrementCount',
+				  count
+				})
+			  }
+			 mutations中的处理方式是将整个commit的对象作为payload使用
+		3.3.3 mutations响应规则
+			一般的，只有提前在store中初始化好所需的属性，才能实现当state中的数据发生改变时, Vue组件会自动更新.
+			如果某个state中的属性不是初始化好的，但又需要在改动state数据时也实现响应式，则：添加时使用vue.set方法，删除时使用vue.delete，才能实现响应式
+		3.3.4 mutations同步函数
+			通常情况下, Vuex要求我们mutations中的方法必须是同步方法，主要的原因是当我们使用devtools时, 可以devtools可以帮助我们捕捉mutation的快照.
+			但是如果是异步操作, 那么devtools将不能很好的追踪这个操作什么时候会被完成.
+	3.4 actions
+		3.4.1 actions的基本定义
+			某些情况, 我们确实希望在Vuex中进行一些异步操作, 比如网络请求，这时就需要在mutation前增加一个Action环节
+		3.4.2 context是什么?
+			context是和store对象具有相同方法和属性的对象.
+			也就是说, 我们可以通过context去进行commit相关的操作, 也可以获取context.state等.
+		3.4.3 actions的分发步骤
+			1. index.js中添加action，其中添加：context.commit('mutations中方法名');
+			2. App.vue中调用actions中的方法：this.$store.dispatch('actions中方法名')
+		3.4.4 支持传递payload
+			App.vue中：dispatch('actions中的方法名', '要传递的信息')
+			actions中：aUpdateInfo(actions中的方法名, 接收传递过来的信息即payload)
+	3.5 Module
+		当应用变得非常复杂时,store对象就有可能变得相当臃肿.
+		为了解决这个问题, Vuex允许我们将store分割成模块(Module), 而每个模块拥有自己的state、mutation、action、getters等
+
+4. 项目结构
+	将除了state外的其他要素均单独抽离出来放到一个新js文件中：将抽离出来的内容放入export default大括号内
+	index.js只需要import相应的文件即可使用这些要素
+	module由于可能有多个，因此先建一个modules文件夹再建js文件
