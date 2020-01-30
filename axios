@@ -1,0 +1,67 @@
+1. 安装及导入
+	npm install axios --save
+	import axios from 'axios'
+
+2. 发送并发请求
+	有时候, 我们可能需求同时发送两个请求
+	使用axios.all, 可以放入多个请求的数组.
+	axios.all([]) 返回的结果是一个数组，使用 axios.spread 可将数组 [res1,res2] 展开为 res1, res2
+
+3. 全局配置
+	事实上, 在开发中可能很多参数都是固定的，这个时候我们可以进行一些抽取, 也可以利用axiox的全局配置
+	3.1 语法
+		axios.defaults.配置项 = '配置内容'
+	3.2 常见的配置选项
+		PPT第11页
+4. axios的实例
+	4.1 为什么要创建axios的实例
+	当我们从axios模块中导入对象时, 使用的实例是默认的实例，当给该实例设置一些默认配置时, 这些配置就被固定下来了.
+	但是后续开发中, 某些配置可能会不太一样，比如某些请求需要使用特定的baseURL或者timeout或者content-Type等.
+	这个时候, 我们就可以创建新的实例, 并且传入属于该实例的配置信息.
+	4.2 创建axios的实例
+	  const instance = axios.create({
+		baseURL: 'http://123.207.32.32:8000',
+		timeout: 5000
+
+5. axios封装
+	5.1 封装的目的
+		当配置信息有变化时，只需要更改封装文件一个文件，而不需要到每个使用了这些配置新的文件中逐一更改
+	5.2 封装举例
+		import axios from 'axios'
+
+		export function request(config) {
+		  // 创建axios的实例
+		  const instance = axios.create({
+			baseURL: 'http://123.207.32.32:8000',
+			timeout: 5000
+		  })
+
+		  return instance(config)
+		}
+
+6. 拦截器
+	axios提供了拦截器，用于我们在发送每次请求或者得到相应后，进行对应的处理
+	6.1 请求拦截
+		6.1.1 作用
+			1.比如config中的一些信息不符合服务器的要求
+			2.比如每次发送网络请求时, 都希望在界面中显示一个请求的图标
+			3.某些网络请求(比如登录(token)), 必须携带一些特殊的信息
+			请求拦截中错误拦截较少，通常都是配置相关的拦截，可能的错误比如请求超时，可以将页面跳转到一个错误页面中。
+		6.1.2 举例
+		  instance.interceptors.request.use(config => {
+			console.log(config);
+			return config
+		  }, err => {
+			console.log(err);
+		  })
+	6.2 响应拦截
+		6.2.1 作用
+			响应的成功拦截中，主要是对数据进行过滤
+			响应的失败拦截中，可以根据status判断报错的错误码，跳转到不同的错误提示页面
+		6.2.2 举例
+		  instance.interceptors.response.use(res => {
+			console.log(res);
+			return res.data
+		  }, err => {
+			console.log(err);
+		  })
