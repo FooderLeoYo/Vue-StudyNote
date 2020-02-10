@@ -144,7 +144,8 @@
 		<li v-for="(value, key, index) in info">{{value}}-{{key}}-{{index}}</li>
 	6.3 组件的key属性
 		官方推荐我们在使用v-for时，给对应的元素或组件添加上一个:key属性，key的作用主要是为了复用数据更新后无变化的部分，从而更高效地更新虚拟DOM
-	6.4 具有响应式特性的数组方法
+7. 数组方法
+	7.1 具有响应式特性的数组方法
 		1. push()
 		在数组末尾插入一个或几个元素
 		2. pop()
@@ -163,28 +164,29 @@
 		删除元素: 只写参数1、参数2或只写参数1，第二个参数表示你要删除几个元素(如果没有第二个参数,就删除后面所有的元素)
 		替换元素: 写全三个参数，第二个参数表示我们要替换几个元素, 后面是用于替换前面的元素
 		插入元素: 写全三个参数，第二个参数传入0, 并且后面跟上要插入的元素
-	6.5 通过索引值替换数组中的元素不具有响应式特性
+	7.2 通过索引值替换数组中的元素不具有响应式特性
 		若要响应式效果，可用以下两种方法：
 		1. splice方法
 			this.letters.splice(0, 1, 'bbbbbb')
 		2. set方法（vue内置）
 			set(要修改的对象, 索引值, 修改后的值)
 			Vue.set(this.letters, 0, 'bbbbbb')
-7. 补充内容：三个高阶函数
-	7.1 filter函数
+		
+8. 补充内容：三个高阶函数
+	8.1 filter函数
 		let newNums = nums.filter(function (n) { // n是每一个元素
 		  return n < 100 // 返回所有小于100的元素
 		})
-	7.2 map函数
+	8.2 map函数
 		let new2Nums = newNums.map(function (n) { // n是每一个元素
 		  return n * 2 // 每个元素乘以2后返回
 		})
-	7.3 reduce函数
+	8.3 reduce函数
 		reduce作用对数组中所有的内容进行汇总
 		let total = new2Nums.reduce(function (preValue, n) { // function有两个参数，preValue是前n-1个元素的累加和，n是第n个元素
 		  return preValue + n // 返回n个元素的和
 		}, 0)
-	7.4 链式编程
+	8.4 链式编程
 		需求：取出所有小于100的数字，将取出的数字乘以2，将所有转换后的数字相加
 		let total = nums.filter(function (n) {
 		  return n < 100
@@ -196,10 +198,10 @@
 		利用箭头函数，可进一步简化为：
 		let total = nums.filter(n => n < 100).map(n => n * 2).reduce((pre, n) => pre + n);
 
-8. v-model
+9. v-model
 	Vue中使用v-model指令来实现表单元素和数据的双向绑定
 	双向绑定的是表单元素的value和vue实例data中对应的数据，绑定后改变两者其中一个的数据，另一个也会变成同样的值
-	8.1 语法
+	9.1 语法
 		例子：
 		<input type="text" v-model="data中的属性">
 		v-model其实是一个语法糖，它的背后本质上是包含两个操作：
@@ -209,29 +211,29 @@
 		<input type="text" v-model="message">
 		等同于
 		<input type="text" v-bind:value="message" v-on:input="message = $event.target.value">
-	8.2 v-model：radio
+	9.2 v-model：radio
 		例子：
 		添加v-model="sex"后，两个单选按钮实现互斥；且与data中的sex双向响应
-	8.3 v-model：checkbox
+	9.3 v-model：checkbox
 		应用场景：
 		单个勾选框，用户同意协议后才能点击下一步
 		多个复选框，记录用户选择的选项，当选中某一个时，就会将input的value添加到data的数组中
-	8.4 v-model：select
+	9.4 v-model：select
 		
-9. 修饰符
-	9.1 lazy修饰符
+10. 修饰符
+	10.1 lazy修饰符
 		默认情况下，v-model默认是在input事件中同步输入框的数据的
 		也就是说，一旦有数据发生改变对应的data中的数据就会自动发生改变，这样更新频率过高且没必要
 		lazy修饰符可以让数据在失去焦点或者回车时才会更新
 		例子：
 		<input type="text" v-model.lazy="message">
-	9.2 number修饰符
+	10.2 number修饰符
 		默认情况下，在输入框中无论我们输入的是字母还是数字，都会被当做字符串类型进行处理
 		但是如果我们希望处理的是数字类型，那么最好直接将内容当做数字处理
 		number修饰符可以让在输入框中输入的内容自动转成数字类型
 		例子：
 		<input type="number" v-model.number="age">
-	9.3 trim修饰符
+	10.3 trim修饰符
 		如果输入的内容首尾有很多空格，通常我们希望将其去除
 		trim修饰符可以过滤内容左右两边的空格
 		例子：
