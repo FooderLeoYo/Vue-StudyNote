@@ -46,7 +46,7 @@
 			在App.vue中的template的<div id="app">内添加：<router-link to="/文件名">标签名</router-link>
 			另起一行添加（位置可变，页面渲染时的位置也会相应改变）：<router-view></router-view>
 	
-3. vue-router的一些配置	
+3. vue-router的一些设置	
 	3.1 设置默认打开就是首页
 		更改index.js中Router实例中的routes下对应的大括号内的内容
 			{
