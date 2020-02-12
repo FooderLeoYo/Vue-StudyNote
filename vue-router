@@ -46,7 +46,7 @@
 			在App.vue中的template的<div id="app">内添加：<router-link to="/文件名">标签名</router-link>
 			另起一行添加（位置可变，页面渲染时的位置也会相应改变）：<router-view></router-view>
 	
-3. vue-router的使用	
+3. vue-router的一些配置	
 	3.1 设置默认打开就是首页
 		更改index.js中Router实例中的routes下对应的大括号内的内容
 			{
@@ -75,27 +75,27 @@
 			2.  通过linkActiveClass改，且可以实现改所有元素的active-class
 			给index.js的Router实例添加linkActiveClass: '要改成的名字'
 
-3.4 路由代码跳转
-	有时候, 页面的跳转可能需要执行对应的JavaScript代码, 这个时候, 就可以使用第二种跳转方式了
-	在App.vue中：
-	<template>
-	  <div id="app">
-		<button @click="homeClick">首页</button> // 绑定点击事件，实现点击该按钮实现跳转
-		<router-view></router-view>
-	  </div>
-	</template>
-	<script>
-		export default {
-		  name: 'App',
-		  methods: {
-			homeClick() {
-			  // 通过代码的方式修改路由 vue-router
-			  this.$router.push('/home')
-			  this.$router.replace('/home')
-			},
-		  }
-		}
-	</script>
+	3.4 路由代码跳转
+		有时候, 页面的跳转可能需要执行对应的JavaScript代码, 这个时候, 就可以使用第二种跳转方式了
+		在App.vue中：
+		<template>
+		  <div id="app">
+			<button @click="homeClick">首页</button> // 绑定点击事件，实现点击该按钮实现跳转
+			<router-view></router-view>
+		  </div>
+		</template>
+		<script>
+			export default {
+			  name: 'App',
+			  methods: {
+				homeClick() {
+				  // 通过代码的方式修改路由 vue-router
+				  this.$router.push('/home')
+				  this.$router.replace('/home')
+				},
+			  }
+			}
+		</script>
 
 4. 动态路由
 	4.1 什么是动态路由
