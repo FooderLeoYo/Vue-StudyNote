@@ -24,7 +24,7 @@
 		// 1. 导入路由对象
 		import VueRouter from 'vue-router'
 		import Vue from 'vue'
-		// 2.通过Vue.use(插件), 安装插件
+		// 2.通过Vue.use(插件), 安装插件（使用.ues方法后，会全局注册VueRouter插件，这样在任意地方都可以使用它了）
 		Vue.use(VueRouter)
 		// 3. 创建路由实例，并且传入路由映射配置
 		const routes = [ // routes负责的就是路由和组件之间的应用关系
