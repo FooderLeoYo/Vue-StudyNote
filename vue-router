@@ -43,6 +43,7 @@
 			path: '/文件名'
 			component: 文件名
 		第三步: 使用路由: 通过<router-link>和<router-view>
+			<router-link>和<router-view>是VueRouter里预定义的两个组件，由于之前已全局注册过VueRouter，故这两个组件也可以全局使用
 			在App.vue中的template的<div id="app">内添加：<router-link to="/文件名">标签名</router-link>
 			另起一行添加（位置可变，页面渲染时的位置也会相应改变）：<router-view></router-view>
 	
