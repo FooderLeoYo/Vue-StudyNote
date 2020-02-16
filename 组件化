@@ -199,7 +199,7 @@
 		例子：
 		<!--vue模板（父组件模板）-->
 		<div id="app">
-		  <cpn @item-click="cpnClick"></cpn> // 将item-click和cpnClick绑定，实现父组件的item-click监听子组件的cpnClick；btnClick后无括号则默认接受item
+		  <cpn @item-click="cpnClick"></cpn> // 将item-click和cpnClick绑定，实现父组件的cpnClick监听子组件的item-click
 		</div>
 		<!--子组件模板-->
 		<template id="cpn">
@@ -223,8 +223,8 @@
 			  }
 			},
 			methods: {
-			  btnClick(item) {
-				this.$emit('item-click', item) // 发射事件: 自定义事件，并将item传递给父组件模板
+			  btnClick(item) { // btnClick后无括号则默认接受item
+				this.$emit('item-click', item) // 发射自定义事件item-click以及item给父组件模板
 			  }
 			}
 		  }
