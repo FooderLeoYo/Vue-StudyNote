@@ -107,7 +107,8 @@
 		4.4.2 .prevent调用 event.preventDefault()，阻止默认行为
 		例如：
 		<input type="submit" value="提交" @click.prevent="submitClick">
-		4.4.3 .once - 只触发一次回调。
+		4.4.3 .once - 只触发一次回调
+		4.4.4 .native 想要监听自定义组件而不是按钮一类的原生组件时，需要加上着个修饰符
 
 5. 条件判断
 	5.1 v-if、v-else-if、v-else
