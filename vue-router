@@ -103,7 +103,7 @@
 		在某些情况下，一个页面的path路径可能是不确定的
 		比如我们进入用户界面时，希望路径后面还跟上当前用户的ID
 	4.2 配置步骤
-		1. index.js中，添加一个path: '/自定义名A/自定义名B'，用以配置目标组件
+		1. index.js中，添加一个path: '/自定义名A/:自定义名B'，用以配置目标组件
 		2. App.vue中，添加：<router-link :to="'/自定义名A/'+自定义名C">自定义名字</router-link>
 		3，目标组件中的.vue文件中，export default大括号内添加computed属性：
 			computed: {
