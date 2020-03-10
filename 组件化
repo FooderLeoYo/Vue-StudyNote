@@ -285,7 +285,9 @@
 		简写：#。例如：v-slot:header 可以被重写为 #header
 	7.4 具名插槽
 		作用：用于指定插入的是哪一个插槽
-		语法：给插槽添加name属性
+		语法：
+		1. 给子组件中的插槽添加一个name属性；
+		2. 父组件中将要插入插槽的内容包裹在一个template中，再在template标签中通过v-slot绑定该name
 		例子：
 		<div id="father">
 		  <child>
@@ -300,9 +302,9 @@
 		
 		<template id="child">
 		  <div>
-			<slot name="left"><span>左边</span></slot>
-			<slot name="center"><span>中间</span></slot>
-			<slot name="right"><span>右边</span></slot>
+		    <slot name="left"><span>左边</span></slot>
+		    <slot name="center"><span>中间</span></slot>
+		    <slot name="right"><span>右边</span></slot>
 		  </div>
 		</template>
 	7.5 作用域插槽
@@ -311,10 +313,11 @@
 			在父组件模板中的语句只能拿到父组件data中的数据，子组件同理
 		7.5.2 作用域插槽的语法
 			1. 子组件模板中的插槽标签中，添加：自定义名="子组件实例data中的目标数据属性名"
-			<slot :自定义名="子组件data属性名">
+				例子：<slot :自定义名="子组件data属性名">
 			2. 父组件使用子组件时，添加一个template标签并添加属性：#default="自定义名"，就可以使用子组件中的数据了
-			<child>
-				<template #default="自定义名">
-					<span>{{自定义名.子组件data属性名}}</span>
-				</template>
-			</child>
+			例子：
+				<child>
+				  <template #default="自定义名">
+				    <span>{{自定义名.子组件data属性名}}</span>
+				  </template>
+				</child>
