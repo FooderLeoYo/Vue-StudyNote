@@ -1,0 +1,25 @@
+1. 用脚手架创建项目：vue create 项目名
+
+2 删掉一些预设的垃圾
+
+3. 划分目录结构
+	3.1 assets
+		3.1.1 css
+			3.1.1.1 normalize.css
+			3.1.1.2 base.css
+		3.1.2 img
+	3.2 components
+		3.2.1 common
+		3.2.2 content
+	3.3 common
+
+4. css
+	1. base.css中导入normalize.css
+	2. APP.vue中style中@import base.css
+
+5. 配置别名：和package.json同级创建vue.config.js
+	注意：在使用别名的时候，<template>和<style>中的静态文件地址需要加~；在script里的, 别名定义成什么就写什么
+
+6. 统一全局格式：和package.json同级创建.editorconfig
+
+7. 配置路由
