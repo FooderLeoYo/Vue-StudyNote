@@ -97,12 +97,19 @@
 			  }
 			}
 		</script>
+		
+4. $route和$router
+	在执行Vue.use(VueRouter)时，VueRouter会执行其install函数
+	进而往vue原型中添加了$router，并将我们在index.js中new的那个router作为值赋给它
+	而所有的组件都继承自vue的原型，因此所有组件均继承了$router
+	因此全局都可以通过调用.$router，获取到我们创建的router
+	$route同理，只不过赋值的时候是把活跃的路由赋值给它
 
-4. 动态路由
-	4.1 什么是动态路由
+5. 动态路由
+	5.1 什么是动态路由
 		在某些情况下，一个页面的path路径可能是不确定的
 		比如我们进入用户界面时，希望路径后面还跟上当前用户的ID
-	4.2 配置步骤
+	5.2 配置步骤
 		1. index.js中，添加一个path: '/自定义名A/:自定义名B'，用以配置目标组件
 		2. App.vue中，添加：<router-link :to="'/自定义名A/'+自定义名C">自定义名字</router-link>
 		3，目标组件中的.vue文件中，export default大括号内添加computed属性：
@@ -114,44 +121,40 @@
 		4. 获取这个添加到路径中的后缀内容并显示到页面中
 			目标组件中的.vue文件的template内添加元素并用mustush语法调用自定义名C
 
-5. 路由的懒加载
-	5.1 什么是懒加载
+6. 路由的懒加载
+	6.1 什么是懒加载
 		首先, 我们知道路由中通常会定义很多不同的页面，一般情况下这些页面是放在一个js文件中，则必然会造成这个js文件非常大
 		如果我们一次性从服务器请求下来这个页面, 可能需要花费一定的时间, 甚至用户的电脑上还出现了短暂空白的情况
 		路由懒加载的主要作用就是将路由对应的每个组件分别打包成一个js代码块，当访问某个路由的时候才加载对应的组件，而非一次性全部加载
-	5.2 懒加载的方式
+	6.2 懒加载的方式
 		在index.js中导入.vue组件时，不用import而使用下面的方式：
 		const Home = () => import('../components/Home.vue')
 
-6. 嵌套路由
-	6.1 什么是嵌套路由
+7. 嵌套路由
+	7.1 什么是嵌套路由
 		某个路径下还分别跟了几个子路径，对应的是几个子组件
-	6.2 配置方法
+	7.2 配置方法
 		1. 在index.js中routes下的需要加嵌套的那个括号里添加children属性
 		2. children配置path和component属性，注意path不能加/
 		3. 子组件的router-link和router-view不放在App.vue中，而是放在父组件的.vue文件中
 
-7. 传递参数
+8. 传递参数
 	传递参数主要有两种类型: params和query
-	7.1 params的类型
+	8.1 params的类型
 		配置路由格式: /router/:id
 		传递的方式: 在path后面跟上对应的值
 		传递后形成的路径: /router/123, /router/abc
-	7.2 query的类型
-		7.2.1 基本
+	8.2 query的类型
+		1 基本
 			配置路由格式: /router, 也就是普通配置
 			传递的方式: 对象中使用query的key作为传递方式
 			传递后形成的路径: /router?id=123, /router?id=abc
-		7.2.2 配置
+		2 配置
 			配置方式和普通的基本相同，唯一不同的是router-link的to属性要写成对象的形式：
 			<router-link :to="{path: '/profile', query: {name: 'why', age: 18, height: 1.88}}">档案</router-link>
-		7.2.3 取出想要的参数
+		3 取出想要的参数
 			在子组件.vue文件中，利用$route.query.属性名：
 			<h2>{{$route.query.name}}</h2>
-
-8. $route和$router的区别
-	$router为VueRouter实例，想要导航到不同URL，则使用$router.push方法
-	$route为当前router跳转对象，里面可以获取name、path、query、params等 
 
 9. 导航守卫
 	9.1 为什么使用导航守卫
