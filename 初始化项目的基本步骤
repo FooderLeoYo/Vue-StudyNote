@@ -11,15 +11,32 @@
 	3.2 components
 		3.2.1 common
 		3.2.2 content
-	3.3 common
+		3.3 network
+		3.4 common
 
 4. css
 	1. base.css中导入normalize.css
 	2. APP.vue中style中@import base.css
 
-5. 配置别名：和package.json同级创建vue.config.js
+5. 配置别名：和package.json同级放vue.config.js
 	注意：在使用别名的时候，<template>和<style>中的静态文件地址需要加~；在script里的, 别名定义成什么就写什么
 
-6. 统一全局格式：和package.json同级创建.editorconfig
+6. 统一全局格式：和package.json同级放.editorconfig
 
 7. 配置路由
+
+8. 封装网络请求
+	1. 安装axios
+	2. network文件夹下放request.js
+
+9. 将better-scroll插件封装成Scroll组件
+	1. 安装：cnpm i better-scroll -S
+	2. components/common下建scroll文件夹，里面建Scroll.vue
+	3. Scroll.vue的template中放一个class为wrapper的div，wrapper里再放一个div，div里放一个slot
+	4. Scroll.vue中导入BScroll（不需要注册组件）
+	5. 创建变量储存BScroll实例：Scroll.vue中添加data，里面添加scroll: null
+	6. 创建BScroll实例：Scroll.vue中添加mounted()，new一个BScroll赋给scroll，设置click为true
+	7. 由调用者决定是否需要是否需要监听上拉加载
+		1. 让外界传递参数决定是否监听：Scroll.vue中的props添加pullUpLoad
+		2. 初始化组件时应用监听类型：mounted的new BScroll中添加pullUpLoad: this.pullUpLoad
+		3. 监听拉到底部：Scroll.vue中的mounted给scroll绑定一个pullingUp，并发射出去
