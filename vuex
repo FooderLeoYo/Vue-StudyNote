@@ -23,7 +23,7 @@
 	2.3 安装vue devtools浏览器插件
 		该插件可以记录每次更改state时的数据
 
-3. Vuex的几个核心概念
+3. Vuex的5个核心属性
 	3.1 State单一状态树
 		如果你的状态信息是保存到多个Store对象中的，那么之后的管理和维护等等都会变得特别困难。
 		所以Vuex也使用了单一状态树来管理应用层级的全部状态
@@ -83,6 +83,13 @@
 	3.5 Module
 		当应用变得非常复杂时,store对象就有可能变得相当臃肿.
 		为了解决这个问题, Vuex允许我们将store分割成模块(Module), 而每个模块拥有自己的state、mutation、action、getters等
+	3.6 辅助函数
+		mapState, mapActions, mapMutations,mapGetters,mapModule
+		1. 作用：在组件中导入后，我们可以在组件中使用对应核心属性的内容
+		2. 使用举例：目标是在组件中使用actions中的addCart方法
+			1. 导入：import { mapActions } from "vuex"; 
+			2. 对应区域添加该辅助函数，如：...mapActions(["addCart"]),就是添加在methods中
+			3. 像使用组件自身的函数一样使用addCart
 
 4. 项目结构
 	将除了state外的其他要素均单独抽离出来放到一个新js文件中：将抽离出来的内容放入export default大括号内
