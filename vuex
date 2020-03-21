@@ -24,11 +24,11 @@
 		该插件可以记录每次更改state时的数据
 
 3. Vuex的5个核心属性
-	3.1 State单一状态树
-		如果你的状态信息是保存到多个Store对象中的，那么之后的管理和维护等等都会变得特别困难。
-		所以Vuex也使用了单一状态树来管理应用层级的全部状态
-	3.2 Getters基本使用
-		有时候，我们需要从store中获取一些state变异后的状态，这是我们可以在Store中定义getters
+	3.1 State
+		vuex中的数据源，我们需要保存的数据就保存在这里，可以在页面通过 this.$store.state来获取我们定义的数据
+	3.2 Getters
+		Getter相当于vue中的computed计算属性，getter 的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了改变才会被重新计算
+		这里我们可以通过定义vuex的Getter来获取，Getters 可以用于监听state中的值的变化，返回计算后的结果
 		例如：
 			getters: {
 				more20stu(state) {
@@ -43,6 +43,7 @@
 				}
 			  }
 	3.3 mutations
+		如果需要修改store中的值唯一的方法就是提交mutation来修改
 		3.3.1 mutations传递参数
 			在通过mutations更新数据的时候, 可以携带一些额外的参数，参数被称为是mutations的载荷(Payload)
 			例如：
@@ -69,6 +70,7 @@
 			通常情况下, Vuex要求我们mutations中的方法必须是同步方法，主要的原因是当我们使用devtools时, 可以devtools可以帮助我们捕捉mutation的快照.
 			但是如果是异步操作, 那么devtools将不能很好的追踪这个操作什么时候会被完成.
 	3.4 actions
+		官方并不建议我们直接去修改store里面的值，而是让我们去提交一个actions，在actions中提交mutation再去修改状态值
 		3.4.1 actions的基本定义
 			某些情况, 我们确实希望在Vuex中进行一些异步操作, 比如网络请求，这时就需要在mutation前增加一个Action环节
 		3.4.2 context是什么?
