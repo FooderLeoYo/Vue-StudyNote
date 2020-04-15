@@ -12,11 +12,11 @@
 
 [catch方法](#jump5)
 
-[then带1个参数和2个参数的示例](#jump6)
-
 [链式调用](#jump7)
 
 [all方法](#jump8)
+
+[race方法](#jump9)
 
 ---
 
@@ -25,7 +25,7 @@
 
 - Promise是异步编程的一种解决方案
 
-- Promise构造函数包含一个参数，它是一个带有resolve方法和reject方法两个参数的回调函数
+- Promise构造函数包含一个参数（必须），它是一个带有resolve方法和reject方法两个参数（必须）的回调函数
 
 - 自己身上有resolve、reject、all、race这几个方法，原型上有then、catch等方法
 
@@ -42,11 +42,46 @@
 <span id="jump2"></span>
 ## resolve方法
 
-promise成功时会回调resolve，这时做了三件事情
+- Promise.resolve(value)方法返回一个以给定值解析后的Promise 对象
+
+- promise成功时会回调resolve(value)，这时做了三件事情
 
 	1. 调用then方法
 
-	2. 将参数传递给then方法，这个参数可能是：
+	2. 将value传递给then方法，这个value可能是：
+		
+		- value是一个普通值，then括号中的函数的参数就是这个值
+
+		```javascript
+		let p1 = new Promise(...)
+		let p2 = new Promise(...)
+
+		p1.then(res => {
+		  // then括号里的函数就是then生成的新Promise的resolve
+		  return ('p2')
+		}).then(res => { 
+		  // 这时res是return的值
+		  console.log(res) // 打印结果为p2（字符串）
+		}).catch(() => console.log('发生错误'))
+		```
+
+		- value是一个 promise ，那么这个promise将作为下一个then的调用者
+
+		```javascript
+		let p1 = new Promise(...)
+		let p2 = new Promise(...)
+
+		p1.then(res => {
+		  return p2
+		}).then(res => {
+		  // 这时res不是p2，而是p2的resolve的value
+		  console.log(res) // 打印结果为p2的resolve的value
+		}).catch(() => console.log('发生错误'))
+		```
+
+		- 空：resolve()，仅起到调用then的作用，无法将任何值传递给then（用的很少）
+
+		- value是thenable的，即带有"then" 方法（用得很少）
 
 	3. 把promise的状态修改为fullfiled
 
@@ -70,7 +105,7 @@ promise失败的时会回调reject，做了三件事：
 
 - Promise.prototype.then方法返回的是一个新的Promise对象
 
-	- 可以理解为.then()把括号里的东西包在一个新的Promise里
+	- then带2个参数（非必须），均为函数。第一个函数就是新Promise的resolve，第二个函数就是reject
 
 	- 该Promise对象的状态为resolved或rejected
 
@@ -78,16 +113,47 @@ promise失败的时会回调reject，做了三件事：
 
 	- 1个参数
 
-		then只处理promise成功时传递过来的参数，即promise成功时回调resolve后传递给then一个成功后的参数
+		then只处理promise成功，失败由catch处理
+
+		```javascript
+		new Promise((resolve, reject) => {
+		  setTimeout(() => {
+			if (成功条件) {
+			  resolve('成功')
+			}
+			else {
+			  reject('失败')
+			}
+		  }, 1000)
+		}).then(res => { 
+		  console.log(res);
+		}).catch(err => {
+		  console.log(err);
+		})
+		```
 
 	- 2个参数
 
-		- then同时处理promise成功或失败时传递过来的参数
+		then同时处理promise成功或失败时传递过来的参数
 
-		- 这两个参数分别是两个函数，第一个对应resolve的回调，第二个对应reject的回调
+		```javascript
+		new Promise((resolve, reject) => {
+		  setTimeout(() => {
+			if (成功条件) {
+			  resolve('Hello Vuejs')
+			}
+			else {
+			  reject('error message')
+			}
+		  }, 1000)
+		}).then(res => { 
+		  console.log(res);
+		}, err => { 
+		  console.log(err);
+		})
+		```
+
 		
-		- 也就是说then方法中接受两个回调，一个成功的回调函数，一个失败的回调函数，并且能在回调函数中拿到成功的数据和失败的原因
-	
 ---
 
 <span id="jump5"></span>
@@ -112,51 +178,6 @@ getJSON("/post/1.json").then(function (post) {
   // 处理前两个回调函数的错误
 });
 
-```
-
----
-	
-<span id="jump6"></span>
-## then带1个参数和2个参数的示例
-
-- then只处理promise成功时传递过来的参数
-
-```javascript
-new Promise((resolve, reject) => {
-  setTimeout(() => {
-	if (成功条件) {
-	  resolve('成功')
-	}
-	else {
-	  reject('失败')
-	}
-  }, 1000)
-}).then(res => { 
-  console.log(res);
-}).catch(err => {
-  console.log(err);
-})
-```
-
-- then同时处理promise成功或失败时传递过来的参数
-
-省略catch，then中带两个函数
-
-```
-new Promise((resolve, reject) => {
-  setTimeout(() => {
-  	if (成功条件) {
-	  resolve('Hello Vuejs')
-	}
-	else {
-	  reject('error message')
-	}
-  }, 1000)
-}).then(res => { 
-  console.log(res);
-}, err => { 
-  console.log(err);
-})
 ```
 
 ---
@@ -189,9 +210,17 @@ const p = new Promise((resolve, reject) => {
 
 注意点：
 
-	1. resolve只用于第一次，then中不能用resolve；第一次必须有哪怕是不传参：resolve()，否则无法调用then
+1. resolve只用于第一次；then中不能直接写resolve，除非把resolve包在一个新Promise中
 
-	2. 除了最后一个then，其他then最后必须return，否则下一个then拿不到数据，res为undefined
+	- 因为then返回一个新的Promise，then括号中的第一个函数其实新Promise的resolve
+
+	- 如果then中调用resolve，相当于resolve(resolve)，显然不对
+
+2. 第一次必须调resolve，哪怕是不传参：resolve()，否则往下无法调用then
+
+3. 除了最后一个then，其他then最后必须return，否则下一个then拿不到数据，res为undefined
+
+4. 最后一定要有一个错误处理（catch或then带第二个参数），否则会遗漏错误捕获
 
 ---
 
